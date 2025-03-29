@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { IPlanningInterval, IPlanningIntervalIteration } from ".";
+import { IPlanningInterval } from ".";
 
 /**
     1. Escolher uma segunda feira para ser Planning;
@@ -12,42 +12,85 @@ import { IPlanningInterval, IPlanningIntervalIteration } from ".";
 export interface IPlanningIntervalGenerator {
 
     plan(pi: IPlanningInterval): IPlanningIntervalGenerator;
+    iterateOne(): IPlanningIntervalGenerator;
     iteratate(): IPlanningIntervalGenerator;
+    checkout(): IPlanningInterval;
+    reset(): IPlanningIntervalGenerator;
 }
 
 export class BasicPlanningIntervalGenerator implements IPlanningIntervalGenerator {
     public pi: IPlanningInterval = {} as IPlanningInterval;
-    protected iterations: IPlanningIntervalIteration[] = [];
-    protected _firstEndDate: Date = new Date(2000, 0, 1);
+
+    protected _currentStartDate: Date = new Date(2000, 0, 1);
+    protected _currentEndDate: Date = new Date(2000, 0, 1);
+    protected _currentIteration: number = 0;
 
 
-    public plan(pi: IPlanningInterval, calendaqrIteration=1): IPlanningIntervalGenerator {
+    public plan(pi: Omit<IPlanningInterval, "path" | "planningIntervalIterations">, calendarIteration=1): IPlanningIntervalGenerator {
         if(pi.iterations <= 0 || pi.iterationIntervalWeeks <= 0) {
             throw new Error("Invalid iterations or iterationIntervalDays values. They must be greater than 0.");
         }
         if(pi.startDate.getDay() !== 1) {
             throw new Error("Start date must be a Monday.");
         }
-        this.pi = pi;
-        this._firstEndDate = DateTime
+        this.pi.iterations = pi.iterations;
+        this.pi.iterationIntervalWeeks = pi.iterationIntervalWeeks;
+        this.pi.startDate = pi.startDate;
+        this.pi = pi as IPlanningInterval;
+        this.pi.path = `PI${this.pi.startDate.getFullYear()}.${calendarIteration}`;
+        this.pi.planningIntervalIterations = [];
+
+        this._currentEndDate = DateTime
             .fromJSDate(pi.startDate)
             .plus({ days: (this.pi.iterationIntervalWeeks - 1) * 7 + 4 })
             .toJSDate();
-        if(this._firstEndDate.getDay() !== 5) {
+        if(this._currentEndDate.getDay() !== 5) {
             throw new Error("End date must be a Friday.");
         }
-        this.pi.path = `PI${this.pi.startDate.getFullYear()}.${calendaqrIteration}`;
+        return this;
+    }
+
+    public iterateOne(): IPlanningIntervalGenerator {
+        if(this._currentIteration >= this.pi.iterations) {
+            throw new Error("No more iterations to iterate.");
+        }
+        if(!Array.isArray(this.pi.planningIntervalIterations)) {
+            throw new Error("Planning interval iterations not initialized.");
+        }
+        this._currentIteration++;
+
+        this.pi.planningIntervalIterations.push({
+            path: `${this.pi.path}/SP${this._currentIteration }`,
+            startDate: this._currentStartDate,
+            endDate: this._currentEndDate,
+            isIpIteration: false,
+        });
+        this._currentStartDate = DateTime
+            .fromJSDate(this._currentStartDate)
+            .plus({days: 7 * this.pi.iterationIntervalWeeks})
+            .toJSDate();
+        this._currentEndDate = DateTime
+            .fromJSDate(this._currentEndDate)
+            .plus({days: 7 * this.pi.iterationIntervalWeeks})
+            .toJSDate();
+
         return this;
     }
 
     public iteratate(): IPlanningIntervalGenerator {
-        
-        // Execution Iterations
-        let startDate = this.pi.startDate;
-        let endDate = this._firstEndDate;
-        for(let i = 0; i < this.pi.iterations - 1; i++) {
-            this.iterations.push({
-                id: `${this.pi.id}/SP${i + 1}`,
+        if(this._currentIteration >= this.pi.iterations) {
+            throw new Error("No more iterations to iterate.");
+        }
+        if(!Array.isArray(this.pi.planningIntervalIterations)) {
+            throw new Error("Planning interval iterations not initialized.");
+        }
+
+        let startDate = new Date(this.pi.startDate);
+        let endDate = new Date(this._currentEndDate);
+        const iterationsRemaining = this.pi.iterations - this._currentIteration;
+
+        for(let i = 0; i < iterationsRemaining - 1; i++) {
+            this.pi.planningIntervalIterations.push({
                 path: `${this.pi.path}/SP${i + 1}`,
                 startDate,
                 endDate,
@@ -58,15 +101,29 @@ export class BasicPlanningIntervalGenerator implements IPlanningIntervalGenerato
         }
         
         // Innovation Iteration
-        this.iterations.push({
-            id: `${this.pi.id}/SP${this.pi.iterations}`,
+        this.pi.planningIntervalIterations.push({
             path: `${this.pi.path}/SP${this.pi.iterations}`,
             startDate,
             endDate,
             isIpIteration: true
         });
 
-        this.pi.planningIntervalIterations = this.iterations;
+        this.pi.planningIntervalIterations;
+        return this;
+    }
+
+    checkout() {
+        const _c = {...this.pi} as IPlanningInterval;
+        this.reset();
+
+        return _c;
+    }
+
+    reset() {
+        this.pi = {} as IPlanningInterval;
+        this._currentStartDate = new Date(2000, 0, 1);
+        this._currentEndDate = new Date(2000, 0, 1);
+        this._currentIteration = 0;
         return this;
     }
 }
