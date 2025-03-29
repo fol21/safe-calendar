@@ -1,0 +1,31 @@
+{
+  "name": "safe-calendar",
+  "version": "0.1.0",
+  "description": "Generates a SaFe PI Planning calendar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fol21/safe-calendar.git"
+  },
+  "keywords": [
+    "safe",
+    "calendar"
+  ],
+  "author": "Fernando Lima",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fol21/safe-calendar/issues"
+  },
+  "homepage": "https://github.com/fol21/safe-calendar#readme",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "luxon": "^3.6.0"
+  }
+}
