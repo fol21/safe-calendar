@@ -10,5 +10,6 @@ More on SaFe PI can be found [here](https://framework.scaledagile.com/planning-i
 # Goals
 
 - Generate a SaFe PI Planning calendar engine (using [Luxon](https://moment.github.io/luxon));
-- Use [react-big-calendar](https://www.npmjs.com/package/react-big-calendar) as a interface framework;
 - Use [electron](https://www.electronjs.org/) as a desktop application framework;
+- Use [electron-forge + vite + typescript](https://www.electronforge.io/config/plugins/vite) as a build tool;
+- Use [react-big-calendar](https://www.npmjs.com/package/react-big-calendar) as a interface framework;
