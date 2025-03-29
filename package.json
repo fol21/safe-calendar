@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/fol21/safe-calendar#readme",
   "devDependencies": {
+    "@types/luxon": "^3.4.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   },

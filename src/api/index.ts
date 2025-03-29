@@ -1,16 +1,21 @@
-
 export interface IPlanningInterval {
-    id: string;
     startDate: Date;
     iterations: number;
-    iterationIntervalDays: number;
+    iterationIntervalWeeks: number;
+    id?: string;
+    path?: string
+
+    planningIntervalIterations?: IPlanningIntervalIteration[];
 }
 
-export interface IPlanningIntervaliteration {
-    id: string;
+export interface IPlanningIntervalIteration {
     startDate: Date;
     endDate: Date;
-    isIpiteration: boolean;
+    isIpIteration: boolean;
+    id?: string;
+    path: string;
+
+    events?: IPlanningIntervalEvent[];
 }
 
 export interface IPlanningIntervalEvent {
@@ -26,4 +31,9 @@ export enum PlanningIntervalEventType {
     REVIEW= 'Review',
     PI_PLANNING= 'PI_Planning',
     INSPECT_ADAPT= 'Inspect_Adapt',
+}
+export interface PlanningIntervalCalendar {
+    id: string;
+    path: string;
+    pis: IPlanningInterval[];
 }
