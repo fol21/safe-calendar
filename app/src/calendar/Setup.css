@@ -1,0 +1,34 @@
+
+:root {
+  --primary-color: #003DA5;
+  --secondary-color: #002855;
+  --background-color: #ececec;
+  --text-color: #333;
+}
+
+.setup-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-color);
+  width: 100vw;
+  height: 100vh;
+}
+
+.setup-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 8px;
+  border: var(--secondary-color) solid 2px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 25vw;
+}
+.setup-form {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
