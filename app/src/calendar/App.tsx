@@ -12,8 +12,14 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import React from 'react'
 import { addHours } from 'date-fns/addHours'
 import { startOfHour } from 'date-fns/startOfHour'
+import { GlobalContext } from '../renderer'
+import { useNavigate } from 'react-router'
 
 const App: FC = () => {
+
+  const context = React.useContext(GlobalContext);
+  console.log("Setup context", context);
+
   const [events, setEvents] = useState<Event[]>([
     {
       title: 'Learn cool stuff',
@@ -21,6 +27,8 @@ const App: FC = () => {
       end,
     },
   ])
+
+  const navigate = useNavigate();
 
   const onEventResize: withDragAndDropProps['onEventResize'] = data => {
     const { start, end } = data
@@ -39,15 +47,18 @@ const App: FC = () => {
   }
 
   return (
-    <DnDCalendar
-      defaultView='week'
-      events={events}
-      localizer={localizer}
-      onEventDrop={onEventDrop}
-      onEventResize={onEventResize}
-      resizable
-      style={{ height: '100vh' }}
-    />
+    <>
+      <button onClick={() => {navigate("/")}}>Back</button>
+      <DnDCalendar
+        defaultView='week'
+        events={events}
+        localizer={localizer}
+        onEventDrop={onEventDrop}
+        onEventResize={onEventResize}
+        resizable
+        style={{ height: '100vh' }}
+      />
+    </>
   )
 }
 

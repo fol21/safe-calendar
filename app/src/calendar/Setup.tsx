@@ -1,15 +1,17 @@
 import React from "react";
 import { GlobalContext } from "../renderer";
 import "./Setup.css";
-import { Link, NavLink } from "react-router";
+import { useNavigate } from "react-router";
 
 export const Setup: React.FC = () => {
     const context = React.useContext(GlobalContext);
+    console.log("Setup context", context);
     const [contextForm, setContextForm] = React.useState({
         numberOfPis: context.numberOfPis,
         iterations: context.iterations,
         startDate: context.startDate.toISOString().split("T")[0],
     });
+    const navigation = useNavigate();
 
     return (
         <div className="setup-container">
@@ -47,19 +49,8 @@ export const Setup: React.FC = () => {
                             setContextForm({ ...contextForm, startDate: new Date(e.target.value).toISOString().split("T")[0] });
                         }}
                     />
-                    <button>
-                        <p>
-                            <Link
-                                to="/calendar"
-                                onClick={() => {
-                                    context.numberOfPis = contextForm.numberOfPis;
-                                    context.iterations = contextForm.iterations;
-                                    context.startDate = new Date(contextForm.startDate);
-                                }}
-                            >
-                                MESSAGE
-                            </Link>
-                        </p>
+                    <button onClick={() => {navigation("/calendar")}}>
+                        <h4>Generate</h4>
                     </button>
             </div>
         </div>
