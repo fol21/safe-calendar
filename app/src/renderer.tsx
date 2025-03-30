@@ -34,18 +34,22 @@ import './index.css';
 import { HashRouter, Route, Routes } from 'react-router';
 import { Setup } from './calendar/Setup';
 
+import {IPlanningIntervalCalendar} from './api'
+
 console.log('👋 This message is being logged by "renderer.ts", included via Vite');
 
 export interface GlobalContextState {
     numberOfPis: number;
     iterations: number;
     startDate: Date;
+    piCalendar: IPlanningIntervalCalendar;
 }
 
 const resetState: GlobalContextState = {
     numberOfPis: 0,
     iterations: 0,
-    startDate: new Date(2000, 0, 1),
+    startDate: new Date(),
+    piCalendar: {} as IPlanningIntervalCalendar,
 };
 
 export const GlobalContext = createContext(resetState);

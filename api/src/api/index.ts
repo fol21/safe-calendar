@@ -31,7 +31,7 @@ export enum PlanningIntervalEventType {
     PI_PLANNING= 'PI_Planning',
     INSPECT_ADAPT= 'Inspect_Adapt',
 }
-export interface PlanningIntervalCalendar {
+export interface IPlanningIntervalCalendar {
     path: string;
     pis: IPlanningInterval[];
     id?: string;
@@ -39,7 +39,6 @@ export interface PlanningIntervalCalendar {
 
 export {
     BasicPlanningIntervalGenerator,
-    IPlanningIntervalGenerator,
 } from "./generators/generators";
 
 export { PlanningIntervalEventsGenerator } from "./generators/PlanningIntervalEventsGenerator";

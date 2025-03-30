@@ -1,0 +1,32 @@
+.calendar-container {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-container .calendar-breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-color);
+    width: 100vw;
+    height: 5vh;
+    background-color: var(--primary-color);
+}
+
+.calendar-breadcrumb .link {
+    font-weight: bold;
+    text-decoration: underline;
+    color: white;
+    cursor: pointer;
+}
+
+.calendar-breadcrumb .link:hover {
+    text-decoration: underline;
+    color: var(--secondary-color);
+}
+
+.calendar-container .calendar {
+    width: 100%;
+    height: 95vh;
+}

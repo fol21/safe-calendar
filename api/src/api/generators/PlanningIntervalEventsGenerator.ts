@@ -17,6 +17,7 @@ export class PlanningIntervalEventsGenerator extends BasicPlanningIntervalGenera
         // Planning event
         it.events.push({
             type: PlanningIntervalEventType.PLANNING,
+            path: `${it.path} ${PlanningIntervalEventType.PLANNING}`,
             startDate: DateTime.fromJSDate(it.startDate).startOf("day").toJSDate(),
             endDate: DateTime.fromJSDate(it.startDate).endOf("day").toJSDate(),
         } as IPlanningIntervalEvent);
@@ -25,6 +26,7 @@ export class PlanningIntervalEventsGenerator extends BasicPlanningIntervalGenera
         if(!it.isIpIteration) {
             it.events.push({
                 type: PlanningIntervalEventType.REVIEW,
+                path: `${it.path} ${PlanningIntervalEventType.REVIEW}`,
                 startDate: DateTime.fromJSDate(it.endDate).startOf("day").toJSDate(),
                 endDate: DateTime.fromJSDate(it.endDate).endOf("day").toJSDate(),
             } as IPlanningIntervalEvent);
@@ -34,11 +36,13 @@ export class PlanningIntervalEventsGenerator extends BasicPlanningIntervalGenera
             // PI Planning event
             it.events.push({
                 type: PlanningIntervalEventType.PI_PLANNING,
+                path: `${it.path} ${PlanningIntervalEventType.PI_PLANNING}`,
                 startDate: DateTime.fromJSDate(it.endDate).minus({days: 1}).startOf("day").toJSDate(),
                 endDate: DateTime.fromJSDate(it.endDate).minus({days: 1}).endOf("day").toJSDate(),
             } as IPlanningIntervalEvent);
             it.events.push({
                 type: PlanningIntervalEventType.PI_PLANNING,
+                path: `${it.path} ${PlanningIntervalEventType.PI_PLANNING}`,
                 startDate: DateTime.fromJSDate(it.endDate).minus({days: 2}).startOf("day").toJSDate(),
                 endDate: DateTime.fromJSDate(it.endDate).minus({days: 2}).endOf("day").toJSDate(),
             } as IPlanningIntervalEvent);

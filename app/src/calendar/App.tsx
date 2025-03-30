@@ -1,44 +1,29 @@
-import { FC, useState } from 'react'
-import { Calendar, dateFnsLocalizer, Event } from 'react-big-calendar'
+import React, { FC, use, useEffect, useState } from 'react'
+import { Calendar, dateFnsLocalizer, Event, luxonLocalizer, Views } from 'react-big-calendar'
 import withDragAndDrop, { withDragAndDropProps } from 'react-big-calendar/lib/addons/dragAndDrop'
-import format from 'date-fns/format'
-import parse from 'date-fns/parse'
-import startOfWeek from 'date-fns/startOfWeek'
-import getDay from 'date-fns/getDay'
-import enUS from 'date-fns/locale/en-US'
-
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import React from 'react'
-import { addHours } from 'date-fns/addHours'
-import { startOfHour } from 'date-fns/startOfHour'
+
+
 import { GlobalContext } from '../renderer'
-import { useNavigate } from 'react-router'
+
+import './App.css'
+import { DateTime, Settings } from 'luxon'
+import { Link } from 'react-router'
+import { RightArrow } from '../icons/RightArrow'
 
 const App: FC = () => {
 
   const context = React.useContext(GlobalContext);
-  console.log("Setup context", context);
 
-  const [events, setEvents] = useState<Event[]>([
-    {
-      title: 'Learn cool stuff',
-      start,
-      end,
-    },
-  ])
-
-  const navigate = useNavigate();
+  const [events, setEvents] = useState<Event[]>()
+  console.log("events", events)
 
   const onEventResize: withDragAndDropProps['onEventResize'] = data => {
     const { start, end } = data
 
     setEvents(currentEvents => {
-      const firstEvent = {
-        start: new Date(start),
-        end: new Date(end),
-      }
-      return [...currentEvents, firstEvent]
+      return [...currentEvents]
     })
   }
 
@@ -46,38 +31,46 @@ const App: FC = () => {
     console.log(data)
   }
 
+  useEffect(() => {
+    setEvents(
+      context.piCalendar.pis
+        .flatMap(pi => pi.planningIntervalIterations)
+        .flatMap(it => it.events)
+        .map((event) => ({
+          start: event.startDate,
+          end: event.endDate,
+          title: event.path,
+        } as Event)))
+  }, [context])
+
   return (
-    <>
-      <button onClick={() => {navigate("/")}}>Back</button>
+    <div className='calendar-container'>
+      <div className='calendar-breadcrumb'>
+        <Link className='link' to="/">Setup</Link>
+        <RightArrow style={{width:"1vw", fill: "white", margin: "0px 10px" }} />
+        <Link className='link' to="/calendar">Calendar</Link>
+      </div>
       <DnDCalendar
-        defaultView='week'
+        defaultView={Views.MONTH}
         events={events}
         localizer={localizer}
         onEventDrop={onEventDrop}
         onEventResize={onEventResize}
         resizable
-        style={{ height: '100vh' }}
+        className='calendar'
       />
-    </>
+    </div>
   )
 }
 
-const locales = {
-  'en-US': enUS,
-}
-const endOfHour = (date: Date): Date => addHours(startOfHour(date), 1)
+const endOfHour = (date: Date): Date => DateTime.fromJSDate(date).endOf('hour').toJSDate()
 const now = new Date()
 const start = endOfHour(now)
-const end = addHours(start, 2)
-// The types here are `object`. Strongly consider making them better as removing `locales` caused a fatal error
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
-})
-//@ts-ignore
+const end = DateTime.fromJSDate(start).plus({hours: 2}).toJSDate()
+
+Settings.defaultZone = 'America/Sao_Paulo'
+const localizer = luxonLocalizer(DateTime, {firstDayOfWeek: 7})
+
 const DnDCalendar = withDragAndDrop(Calendar)
 
 export default App
