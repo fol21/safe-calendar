@@ -27,43 +27,32 @@
  */
 
 
-import React, { createContext } from 'react';
+import React, { createContext, useReducer } from 'react';
 import { createRoot } from 'react-dom/client'
-import App from './calendar/App'
-import './index.css';
 import { HashRouter, Route, Routes } from 'react-router';
+
+import App from './calendar/App'
 import { Setup } from './calendar/Setup';
 
-import {IPlanningIntervalCalendar} from './api'
+import './index.css';
+import { GlobalContext, GlobalContextDispatch, hadleUpdateContextReducer, resetState } from './state/reducer';
 
-console.log('👋 This message is being logged by "renderer.ts", included via Vite');
 
-export interface GlobalContextState {
-    numberOfPis: number;
-    iterations: number;
-    startDate: Date;
-    piCalendar: IPlanningIntervalCalendar;
+const RootElement: React.FC = () => {
+    const [context, dispatch] = useReducer(hadleUpdateContextReducer, resetState);
+    return (
+        <GlobalContext.Provider value={context}>
+            <GlobalContextDispatch.Provider value={dispatch}>
+                <HashRouter>
+                    <Routes>
+                        <Route path="/" element={<Setup />} />
+                        <Route path="/calendar" element={<App />} />
+                    </Routes>
+                </HashRouter>
+            </GlobalContextDispatch.Provider>
+        </GlobalContext.Provider>
+    )
 }
 
-const resetState: GlobalContextState = {
-    numberOfPis: 0,
-    iterations: 0,
-    startDate: new Date(),
-    piCalendar: {} as IPlanningIntervalCalendar,
-};
-
-export const GlobalContext = createContext(resetState);
-
-const RootElement =
-    <GlobalContext.Provider value={resetState}>
-        <HashRouter>
-            <Routes>
-                <Route path="/" element={<Setup />} />
-                <Route path="/calendar" element={<App />} />
-            </Routes>
-        </HashRouter>
-    </GlobalContext.Provider>
-
-document.getElementById('root') as HTMLElement;
 const root = createRoot(document.getElementById('root'));
-root.render(RootElement)
+root.render(<RootElement />);

@@ -1,19 +1,19 @@
-import React, { FC, use, useEffect, useState } from 'react'
-import { Calendar, dateFnsLocalizer, Event, luxonLocalizer, Views } from 'react-big-calendar'
+import React, { FC, useEffect, useState } from 'react'
+import { Calendar, Event, luxonLocalizer, Views } from 'react-big-calendar'
 import withDragAndDrop, { withDragAndDropProps } from 'react-big-calendar/lib/addons/dragAndDrop'
+import { Link } from 'react-router'
+
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-
-
-import { GlobalContext } from '../renderer'
-
 import './App.css'
+
+
+
 import { DateTime, Settings } from 'luxon'
-import { Link } from 'react-router'
 import { RightArrow } from '../icons/RightArrow'
+import { GlobalContext } from '../state/reducer'
 
 const App: FC = () => {
-
   const context = React.useContext(GlobalContext);
 
   const [events, setEvents] = useState<Event[]>()
